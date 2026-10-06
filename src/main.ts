@@ -1,4 +1,5 @@
 import './style.css';
+import { io } from 'socket.io-client';
 import {
   Engine,
   Scene,
@@ -12,6 +13,16 @@ import {
 
 window.onload = function () {
   const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
+
+  const socket = io('http://localhost:3000');
+
+socket.on('connect', () => {
+  console.log(`Conectado al servidor LUNARIS-01: ${socket.id}`);
+});
+
+socket.on('disconnect', () => {
+  console.log('Desconectado del servidor LUNARIS-01');
+});
 
   const engine = new Engine(canvas, true);
   const scene = new Scene(engine);
