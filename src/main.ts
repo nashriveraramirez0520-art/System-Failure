@@ -84,6 +84,7 @@ socket.on('player-left', () => {
     return;
   }
 
+  remotePlayerTargetPosition.set(0, -10, 0);
   remotePlayer.position.set(0, -10, 0);
 });
 
