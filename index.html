@@ -7,6 +7,25 @@
     <title>punto</title>
   </head>
   <body>
+    <div id="multiplayerMenu">
+  <h1>SYSTEM FAILURE</h1>
+  <p>LUNARIS-01 MULTIPLAYER</p>
+
+  <button id="createRoomButton">CREATE ROOM</button>
+
+  <div>
+    <input
+      id="roomCodeInput"
+      type="text"
+      maxlength="6"
+      placeholder="ROOM CODE"
+    />
+
+    <button id="joinRoomButton">JOIN ROOM</button>
+  </div>
+
+  <p id="roomStatus">Not connected to a room</p>
+</div>
     <canvas id="renderCanvas"></canvas>
     <script type="module" src="/src/main.ts"></script>
   </body>
