@@ -20,6 +20,7 @@ window.onload = function () {
 
   const socket = io('http://localhost:3000');
   let remotePlayer: any = null;
+  let remotePlayerTargetPosition = new Vector3(0, -10, 0);
 
   const createRoomButton = document.getElementById(
     'createRoomButton'
@@ -69,7 +70,7 @@ window.onload = function () {
     return;
   }
 
-  remotePlayer.position.set(
+  remotePlayerTargetPosition.set(
     playerData.position.x,
     playerData.position.y - 0.9,
     playerData.position.z
@@ -322,6 +323,13 @@ remotePlayer.material = remotePlayerMaterial;
 
 engine.runRenderLoop(() => {
   scene.render();
+  if (remotePlayer) {
+  remotePlayer.position = Vector3.Lerp(
+    remotePlayer.position,
+    remotePlayerTargetPosition,
+    0.15
+  );
+}
 
   const now = performance.now();
 
