@@ -19,6 +19,7 @@ window.onload = function () {
   // =========================================================
 
   const socket = io('http://localhost:3000');
+  let remotePlayer: any = null;
 
   const createRoomButton = document.getElementById(
     'createRoomButton'
@@ -63,6 +64,27 @@ window.onload = function () {
     console.error(`Error al entrar: ${message}`);
     roomStatus.textContent = message;
   });
+  socket.on('player-moved', (playerData) => {
+  if (!remotePlayer) {
+    return;
+  }
+
+  remotePlayer.position.set(
+    playerData.position.x,
+    playerData.position.y - 0.9,
+    playerData.position.z
+  );
+
+  remotePlayer.rotation.y = playerData.rotation.y;
+});
+
+socket.on('player-left', () => {
+  if (!remotePlayer) {
+    return;
+  }
+
+  remotePlayer.position.set(0, -10, 0);
+});
 
   createRoomButton.addEventListener('click', () => {
     socket.emit('create-room');
@@ -265,12 +287,60 @@ window.onload = function () {
   cryopod2.rotation.x = -Math.PI / 6;
 
   // =========================================================
+// REMOTE PLAYER
+// =========================================================
+
+  remotePlayer = MeshBuilder.CreateCapsule(
+  'remotePlayer',
+  {
+    height: 1.8,
+    radius: 0.4
+  },
+  scene
+);
+
+remotePlayer.position = new Vector3(0, -10, 0);
+
+const remotePlayerMaterial = new StandardMaterial(
+  'remotePlayerMaterial',
+  scene
+);
+
+remotePlayerMaterial.diffuseColor = new Color3(
+  1,
+  0.25,
+  0.25
+);
+
+remotePlayer.material = remotePlayerMaterial;
+
+  // =========================================================
   // GAME LOOP
   // =========================================================
 
-  engine.runRenderLoop(() => {
-    scene.render();
-  });
+  let lastMovementUpdate = 0;
+
+engine.runRenderLoop(() => {
+  scene.render();
+
+  const now = performance.now();
+
+  if (now - lastMovementUpdate >= 50) {
+    lastMovementUpdate = now;
+
+    socket.emit('player-move', {
+      position: {
+        x: camera.position.x,
+        y: camera.position.y,
+        z: camera.position.z
+      },
+
+      rotation: {
+        y: camera.rotation.y
+      }
+    });
+  }
+});
 
   window.addEventListener('resize', () => {
     engine.resize();
