@@ -5,6 +5,7 @@ import {
   Scene,
   FreeCamera,
   Vector3,
+  Ray,
   HemisphericLight,
   MeshBuilder,
   StandardMaterial,
@@ -21,6 +22,16 @@ window.onload = function () {
   const socket = io('http://localhost:3000');
   let remotePlayer: any = null;
   let remotePlayerTargetPosition = new Vector3(0, -10, 0);
+  let verticalVelocity = 0;
+  let horizontalVelocity = Vector3.Zero();
+  let isGrounded = true;
+
+  const jumpForce = 0.18;
+  const gravityForce = 0.012;
+
+  const floorCameraY = 1.8;
+  const landingOffset = 1.153;
+  const landingDetectionDistance = 1.85;
 
   const createRoomButton = document.getElementById(
     'createRoomButton'
@@ -132,16 +143,34 @@ socket.on('player-left', () => {
   camera.speed = 0.23;
   camera.minZ = 0.05;
 
-  camera.applyGravity = true;
+  camera.applyGravity = false;
   camera.checkCollisions = true;
 
   camera.ellipsoid = new Vector3(0.5, 0.9, 0.5);
   camera.ellipsoidOffset = new Vector3(0, 0.9, 0);
 
-  camera.keysUp.push(87);
-  camera.keysDown.push(83);
-  camera.keysLeft.push(65);
-  camera.keysRight.push(68);
+ // camera.keysUp.push(87);
+ // camera.keysDown.push(83);
+ // camera.keysLeft.push(65);
+ // camera.keysRight.push(68);
+
+ const keysPressed = new
+ Set<string>();
+
+ window.addEventListener('keydown', (event) => {
+  keysPressed.add(event.code);
+ });
+
+ window.addEventListener('keyup', (event) => {
+  keysPressed.delete(event.code);
+ });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.code === 'Space' && isGrounded && !event.repeat) {
+      verticalVelocity = jumpForce;
+      isGrounded = false;
+    }
+  });
 
   // =========================================================
   // LIGHT
@@ -288,7 +317,7 @@ socket.on('player-left', () => {
   cryopod2.checkCollisions = true;
   cryopod2.rotation.x = -Math.PI / 6;
 
-  // =========================================================
+// =========================================================
 // REMOTE PLAYER
 // =========================================================
 
@@ -323,6 +352,100 @@ remotePlayer.material = remotePlayerMaterial;
   let lastMovementUpdate = 0;
 
 engine.runRenderLoop(() => {
+  //==========================================================
+  //PLAYER MOVEMENT
+  //==========================================================
+  const moveSpeed = 0.01;
+  const forward = camera.getDirection(new Vector3(0, 0, 1));
+  forward.y = 0;
+  forward.normalize();
+
+  const right = camera.getDirection(new Vector3(1, 0, 0));
+  right.y = 0;
+  right.normalize();
+
+  const movement = Vector3.Zero();
+
+  if (keysPressed.has('KeyW')) {
+    movement.addInPlace(forward);
+  }
+
+  if (keysPressed.has('KeyS')) {
+    movement.subtractInPlace(forward);
+  }
+
+  if (keysPressed.has('KeyD')) {
+    movement.addInPlace(right);
+  }
+
+  if (keysPressed.has('KeyA')) {
+    movement.subtractInPlace(right);
+  }
+
+  if (movement.lengthSquared() > 0) {
+    movement.normalize();
+    movement.scaleInPlace(moveSpeed);
+
+    if (isGrounded) {
+      horizontalVelocity.copyFrom(movement);
+    }
+    if (isGrounded) {
+
+    camera.cameraDirection.addInPlace(movement);
+    }
+
+    if (!isGrounded) {
+      camera.cameraDirection.addInPlace(horizontalVelocity);
+
+      if (movement.lengthSquared() > 0)
+      {
+        const airControl = movement.clone();
+        const sameDirection = Vector3.Dot(
+          horizontalVelocity.normalizeToNew(), airControl.normalizeToNew() ) > 0.95;
+        
+          if (!sameDirection) {
+
+        camera.cameraDirection.addInPlace(airControl);
+          }
+      }
+    }
+    
+  }
+  //==========================================================
+  // JUMP PHYSICS
+  //==========================================================
+  const groundRay = new Ray(camera.position, new Vector3(0, -1, 0), 2);
+  const groundHit = scene.pickWithRay(groundRay);
+  const hasGroundBelow = groundHit?.hit === true && groundHit.distance <= landingDetectionDistance;
+
+  if (isGrounded && !hasGroundBelow)
+  {
+    isGrounded = false;
+    verticalVelocity = 0;
+  }
+  
+  
+  if (!isGrounded) {
+    camera.position.y += verticalVelocity;
+    verticalVelocity -= gravityForce;
+
+    if (verticalVelocity <= 0 && groundHit?.hit === true && groundHit.distance <= landingDetectionDistance) {
+
+      if (groundHit.pickedPoint) {
+        camera.position.y = groundHit.pickedPoint.y + landingOffset;
+      }
+      verticalVelocity = 0;
+      isGrounded = true;
+    }
+
+    if (camera.position.y <= floorCameraY) {
+      camera.position.y = floorCameraY;
+      verticalVelocity = 0;
+      isGrounded = true;
+
+    }
+  }
+
   scene.render();
   if (remotePlayer) {
   remotePlayer.position = Vector3.Lerp(
