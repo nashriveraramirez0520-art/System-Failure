@@ -69,10 +69,12 @@ io.on('connection', (socket) => {
 
     socket.join(roomCode);
     socket.data.roomCode = roomCode;
+    socket.data.playerRole = 'player1';
 
     console.log(`Sala creada: ${roomCode} por ${socket.id}`);
 
     socket.emit('room-created', roomCode);
+    socket.emit('player-role', 'player1');
   });
 
   // =======================================================
@@ -96,12 +98,14 @@ io.on('connection', (socket) => {
 
     socket.join(normalizedRoomCode);
     socket.data.roomCode = normalizedRoomCode;
+    socket.data.playerRole = 'player2';
 
     console.log(
       `Jugador ${socket.id} entró a la sala ${normalizedRoomCode}`
     );
 
     socket.emit('room-joined', normalizedRoomCode);
+    socket.emit('player-role', 'player2');
 
     io.to(normalizedRoomCode).emit('players-ready');
   });

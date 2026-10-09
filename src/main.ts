@@ -74,6 +74,23 @@ window.onload = function () {
     roomStatus.textContent = '2/2 PLAYERS READY';
   });
 
+  let myPlayerRole = '';
+
+  socket.on('player-role', (role) => {
+    myPlayerRole = role;
+    console.log(`My player role: ${myPlayerRole}`);
+
+    if (myPlayerRole === 'player1') {
+      camera.position.set(-3, 3.8345, 13.5);
+      camera.rotation.set(0, Math.PI + Math.PI / 16, 0);
+    }
+
+    if (myPlayerRole === 'player2') {
+      camera.position.set(3, 3.8345, 13.5);
+      camera.rotation.set(0, Math.PI + Math.PI / 16, 0);
+    }
+  });
+
   socket.on('join-error', (message) => {
     console.error(`Error al entrar: ${message}`);
     roomStatus.textContent = message;
