@@ -19,7 +19,7 @@ window.onload = function () {
   // MULTIPLAYER - SOCKET.IO
   // =========================================================
 
-  const socket = io('http://localhost:3000');
+  const socket = io();
 
   let remotePlayer: any = null;
   let remotePlayerTargetPosition = new Vector3(0, -10, 0);

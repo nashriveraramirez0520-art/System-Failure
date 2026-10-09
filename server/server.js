@@ -1,13 +1,45 @@
 import { createServer } from 'http';
+import express from 'express';
 import { Server } from 'socket.io';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-const httpServer = createServer();
+// =========================================================
+// PATHS
+// =========================================================
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// =========================================================
+// EXPRESS + HTTP SERVER
+// =========================================================
+
+const app = express();
+const httpServer = createServer(app);
+
+// =========================================================
+// SOCKET.IO
+// =========================================================
 
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: true,
+    credentials: true,
   },
 });
+
+// =========================================================
+// SERVE SYSTEM FAILURE
+// =========================================================
+
+const distPath = join(__dirname, '..', 'dist');
+
+app.use(express.static(distPath));
+
+// =========================================================
+// ROOM CODE
+// =========================================================
 
 function generateRoomCode() {
   const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -21,19 +53,21 @@ function generateRoomCode() {
   return code;
 }
 
+// =========================================================
+// MULTIPLAYER
+// =========================================================
+
 io.on('connection', (socket) => {
   console.log(`Jugador conectado: ${socket.id}`);
 
-  // =========================================================
+  // =======================================================
   // CREAR SALA
-  // =========================================================
+  // =======================================================
 
   socket.on('create-room', () => {
     const roomCode = generateRoomCode();
 
     socket.join(roomCode);
-
-    // Guardamos la sala actual de este jugador.
     socket.data.roomCode = roomCode;
 
     console.log(`Sala creada: ${roomCode} por ${socket.id}`);
@@ -41,9 +75,9 @@ io.on('connection', (socket) => {
     socket.emit('room-created', roomCode);
   });
 
-  // =========================================================
+  // =======================================================
   // UNIRSE A SALA
-  // =========================================================
+  // =======================================================
 
   socket.on('join-room', (roomCode) => {
     const normalizedRoomCode = roomCode.trim().toUpperCase();
@@ -61,8 +95,6 @@ io.on('connection', (socket) => {
     }
 
     socket.join(normalizedRoomCode);
-
-    // Guardamos también la sala del segundo jugador.
     socket.data.roomCode = normalizedRoomCode;
 
     console.log(
@@ -74,9 +106,9 @@ io.on('connection', (socket) => {
     io.to(normalizedRoomCode).emit('players-ready');
   });
 
-  // =========================================================
+  // =======================================================
   // MOVIMIENTO DEL JUGADOR
-  // =========================================================
+  // =======================================================
 
   socket.on('player-move', (playerData) => {
     const roomCode = socket.data.roomCode;
@@ -85,8 +117,6 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // Envía el movimiento a todos los demás jugadores
-    // de ESTA sala, pero no de vuelta al jugador que lo envió.
     socket.to(roomCode).emit('player-moved', {
       id: socket.id,
       position: playerData.position,
@@ -94,9 +124,9 @@ io.on('connection', (socket) => {
     });
   });
 
-  // =========================================================
+  // =======================================================
   // DESCONEXIÓN
-  // =========================================================
+  // =======================================================
 
   socket.on('disconnect', () => {
     const roomCode = socket.data.roomCode;
@@ -109,7 +139,11 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = 3000;
+// =========================================================
+// SERVER
+// =========================================================
+
+const PORT = process.env.PORT || 3000;
 
 httpServer.listen(PORT, () => {
   console.log(`LUNARIS-01 server online on port ${PORT}`);
