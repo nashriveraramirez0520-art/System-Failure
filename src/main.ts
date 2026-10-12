@@ -9,8 +9,7 @@ import {
   HemisphericLight,
   MeshBuilder,
   StandardMaterial,
-  Color3,
-  helperFunctionsWGSL
+  Color3
 } from '@babylonjs/core';
 
 window.onload = function () {
