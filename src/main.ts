@@ -24,6 +24,13 @@ window.onload = function () {
   let remotePlayer: any = null;
   let remotePlayerTargetPosition = new Vector3(0, -10, 0);
 
+  type PlayerSnapshot = {
+    time: number;
+    position: Vector3;
+  };
+
+  const remotePlayerSnapshots: PlayerSnapshot[] = [];
+
   let verticalVelocity = 0;
   let horizontalVelocity = Vector3.Zero();
   let isGrounded = true;
@@ -107,6 +114,19 @@ window.onload = function () {
     if (!remotePlayer) {
       return;
     }
+
+   remotePlayerSnapshots.push({
+    time: performance.now(),
+    position: new Vector3(
+      playerData.position.x,
+      playerData.position.y - 0.9,
+      playerData.position.z
+    )
+   });
+
+   if (remotePlayerSnapshots.length > 20) {
+    remotePlayerSnapshots.shift();
+   }
 
     remotePlayerTargetPosition.set(
       playerData.position.x,
@@ -550,12 +570,38 @@ window.onload = function () {
     // REMOTE PLAYER SMOOTHING
     // ========================================================
 
-    if (remotePlayer) {
-      remotePlayer.position = Vector3.Lerp(
-        remotePlayer.position,
-        remotePlayerTargetPosition,
-        0.30
-      );
+    if (remotePlayer && remotePlayerSnapshots.length >= 2)
+    {
+      const interpolationDelay = 150;
+      const renderTime = performance.now() - interpolationDelay;
+
+      while (
+        remotePlayerSnapshots.length >= 2 && remotePlayerSnapshots[1].time <= renderTime
+      ) {
+        remotePlayerSnapshots.shift();
+      }
+
+      if (remotePlayerSnapshots.length >= 2) {
+        const olderSnapshot = remotePlayerSnapshots[0];
+        const newerSnapshot = remotePlayerSnapshots[1];
+
+        const snapshotDuration = newerSnapshot.time - olderSnapshot.time;
+
+        if (snapshotDuration > 0) {
+          const interpolationAmount = (renderTime - olderSnapshot.time) / snapshotDuration;
+
+          const clampedAmount = Math.max(
+            0,
+            Math.min(1, interpolationAmount)
+          );
+            remotePlayer.position = Vector3.Lerp(
+              olderSnapshot.position,
+              newerSnapshot.position,
+              clampedAmount
+            );
+          
+        }
+      }
     }
 
     // ========================================================
