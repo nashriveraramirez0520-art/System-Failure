@@ -101,7 +101,7 @@ window.onload = function () {
   socket.on('player-moved', (playerData) => {
 
    const nowReived = performance.now();
-   console.log('Movimiento recibido despues de $ {(nowReived - lastReceivedMovement). toFixed(1)} ms');
+   console.log(nowReived - lastReceivedMovement);
    lastReceivedMovement = nowReived;
 
     if (!remotePlayer) {
