@@ -619,9 +619,11 @@ window.onload = function () {
     const now = performance.now();
 
     if (now - lastMovementUpdate >= 33) {
-      lastMovementUpdate = now;
+  console.log('SEND', now - lastMovementUpdate);
 
-      socket.emit('player-move', {
+  lastMovementUpdate = now;
+
+  socket.emit('player-move', {
         position: {
           x: camera.position.x,
           y: camera.position.y,
