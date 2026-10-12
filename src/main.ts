@@ -9,7 +9,8 @@ import {
   HemisphericLight,
   MeshBuilder,
   StandardMaterial,
-  Color3
+  Color3,
+  helperFunctionsWGSL
 } from '@babylonjs/core';
 
 window.onload = function () {
@@ -108,6 +109,7 @@ window.onload = function () {
     );
 
     remotePlayer.rotation.y = playerData.rotation.y;
+    remotePlayerHead.rotation.x = playerData.rotation.x;
   });
 
   socket.on('player-left', () => {
@@ -365,6 +367,34 @@ window.onload = function () {
 
   remotePlayer.material = remotePlayerMaterial;
 
+  //==========================================================
+  // REMOTE PLAYER - HEAD
+  //==========================================================
+
+  const remotePlayerHead = MeshBuilder.CreateSphere('remotePlayerHead', { diameter: 0.75 }, scene);
+  remotePlayerHead.parent = remotePlayer;
+  remotePlayerHead.position = new Vector3(0, 1.05, 0);
+
+  remotePlayerHead.material = remotePlayerMaterial;
+  
+  //==========================================================
+  // REMOTE PLAYER - VISOR
+  //==========================================================
+
+  const remotePlayerVisor = MeshBuilder.CreateBox('remotePlayerVisor',
+    {
+      width: 0.5,
+      height: 0.22,
+      depth: 0.08
+    }, scene);
+  
+    remotePlayerVisor.parent = remotePlayerHead;
+    remotePlayerVisor.position = new Vector3(0, 0, 0.37);
+
+    const remotePlayerVisorMaterial = new StandardMaterial('remotePlayerVisorMaterial', scene);
+    remotePlayerVisorMaterial.diffuseColor = new Color3(0.05, 0.1, 0.15);
+    remotePlayerVisor.material = remotePlayerVisorMaterial;
+
   // =========================================================
   // GAME LOOP
   // =========================================================
@@ -529,6 +559,7 @@ window.onload = function () {
         },
 
         rotation: {
+          x: camera.rotation.x,
           y: camera.rotation.y
         }
       });
@@ -541,3 +572,4 @@ window.onload = function () {
     engine.resize();
   });
 };
+
