@@ -21,6 +21,14 @@ window.onload = function () {
 
   const socket = io();
 
+  socket.on('connect', () => {
+  console.log('Socket transport:', socket.io.engine.transport.name);
+
+  socket.io.engine.on('upgrade', (transport) => {
+    console.log('Socket upgraded to:', transport.name);
+  });
+});
+
   let remotePlayer: any = null;
   let remotePlayerTargetPosition = new Vector3(0, -10, 0);
 
