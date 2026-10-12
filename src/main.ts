@@ -96,7 +96,14 @@ window.onload = function () {
     roomStatus.textContent = message;
   });
 
+  let lastReceivedMovement = performance.now();
+
   socket.on('player-moved', (playerData) => {
+
+   const nowReived = performance.now();
+   console.log('Movimiento recibido despues de $ {(nowReived - lastReceivedMovement). toFixed(1)} ms');
+   lastReceivedMovement = nowReived;
+
     if (!remotePlayer) {
       return;
     }
@@ -455,6 +462,16 @@ window.onload = function () {
         horizontalVelocity.copyFrom(movement);
         camera.cameraDirection.addInPlace(movement);
       }
+    }
+
+    if (
+      isGrounded &&
+      !keysPressed.has('KeyW') &&
+      !keysPressed.has('KeyS') &&
+      !keysPressed.has('KeyA') &&
+      !keysPressed.has('KeyD') 
+    ) {
+      horizontalVelocity.set(0, 0, 0);
     }
 
     // --------------------------------------------------------
