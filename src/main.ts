@@ -537,7 +537,7 @@ window.onload = function () {
       remotePlayer.position = Vector3.Lerp(
         remotePlayer.position,
         remotePlayerTargetPosition,
-        0.15
+        0.30
       );
     }
 
