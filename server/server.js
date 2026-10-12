@@ -114,7 +114,18 @@ io.on('connection', (socket) => {
   // MOVIMIENTO DEL JUGADOR
   // =======================================================
 
+  let lastServerMovement = performance.now();
+
   socket.on('player-move', (playerData) => {
+    const nowServer = performance.now();
+
+      console.log(
+        'Server Receive',
+        (nowServer - lastServerMovement).toFixed(1),
+        'ms'
+      );
+      
+      lastServerMovement = nowServer;
     const roomCode = socket.data.roomCode;
 
     if (!roomCode) {
@@ -122,6 +133,8 @@ io.on('connection', (socket) => {
     }
 
     socket.to(roomCode).emit('player-moved', {
+      
+
       id: socket.id,
       position: playerData.position,
       rotation: playerData.rotation,
