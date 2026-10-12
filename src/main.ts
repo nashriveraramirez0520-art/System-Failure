@@ -547,7 +547,7 @@ window.onload = function () {
 
     const now = performance.now();
 
-    if (now - lastMovementUpdate >= 50) {
+    if (now - lastMovementUpdate >= 33) {
       lastMovementUpdate = now;
 
       socket.emit('player-move', {
