@@ -30,7 +30,6 @@ window.onload = function () {
 });
 
   let remotePlayer: any = null;
-  let remotePlayerTargetPosition = new Vector3(0, -10, 0);
 
   type PlayerSnapshot = {
     time: number;
@@ -136,12 +135,6 @@ window.onload = function () {
     remotePlayerSnapshots.shift();
    }
 
-    remotePlayerTargetPosition.set(
-      playerData.position.x,
-      playerData.position.y - 0.9,
-      playerData.position.z
-    );
-
     remotePlayer.rotation.y = playerData.rotation.y;
     remotePlayerHead.rotation.x = playerData.rotation.x;
   });
@@ -151,7 +144,6 @@ window.onload = function () {
       return;
     }
 
-    remotePlayerTargetPosition.set(0, -10, 0);
     remotePlayer.position.set(0, -10, 0);
   });
 
@@ -580,7 +572,7 @@ window.onload = function () {
 
     if (remotePlayer && remotePlayerSnapshots.length >= 2)
     {
-      const interpolationDelay = 150;
+      const interpolationDelay = 250;
       const renderTime = performance.now() - interpolationDelay;
 
       while (
