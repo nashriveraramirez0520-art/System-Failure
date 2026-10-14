@@ -572,7 +572,7 @@ window.onload = function () {
 
     if (remotePlayer && remotePlayerSnapshots.length >= 2)
     {
-      const interpolationDelay = 150;
+      const interpolationDelay = 100;
       const renderTime = performance.now() - interpolationDelay;
 
       while (
