@@ -275,6 +275,9 @@ window.onload = function () {
   frontWall.position = new Vector3(0, 2, -15);
   frontWall.checkCollisions = true;
 
+  frontWall.setEnabled(false);
+  
+
   const leftWall = MeshBuilder.CreateBox(
     'leftWall',
     {
@@ -298,8 +301,98 @@ window.onload = function () {
     scene
   );
 
+  
   rightWall.position = new Vector3(15, 2, 0);
   rightWall.checkCollisions = true;
+
+  //==========================================================
+  // PROA LUNARIS-01
+  //==========================================================
+  
+  const frontLeftHull = MeshBuilder.CreateBox('frontLeftHull',
+    {
+      width: 0.3,
+      height: 4,
+      depth: 14.5
+    },
+    scene
+  );
+  
+
+  frontLeftHull.position = new Vector3(-10.2, 2, -20);
+  frontLeftHull.rotation.y = -Math.PI / 4;
+  frontLeftHull.checkCollisions = true;
+
+  const frontRightHull = MeshBuilder.CreateBox(
+    'frontRightHull',
+    {
+      width: 0.3,
+      height: 4,
+      depth: 14.5
+    },
+    scene
+  );
+
+  frontRightHull.position = new Vector3(10.2, 2, -20);
+  frontRightHull.rotation.y = Math.PI / 4;
+  frontRightHull.checkCollisions = true;
+
+  const frontCenterHull = MeshBuilder.CreateBox(
+    'frontCenterHull',
+    {
+      width: 7,
+      height: 4,
+      depth: 0.3
+    },
+    scene
+  );
+
+  frontCenterHull.position = new Vector3(0, 2, -25);
+  frontCenterHull.checkCollisions = true;
+
+  const frontLeftCurve = MeshBuilder.CreateBox(
+    'frontLeftCurve',
+    {
+      width: 0.3,
+      height: 4,
+      depth: 5
+    },
+    scene
+  );
+
+  frontLeftCurve.position = new Vector3(-5.15, 2, -24.1);
+  frontLeftCurve.rotation.y = -Math.PI / 3;
+  frontLeftCurve.checkCollisions = true;
+  
+  const frontRightCurve = MeshBuilder.CreateBox(
+    'frontRightCurve',
+    {
+      width: 0.3,
+      height: 4,
+      depth: 5
+    },
+    scene
+  );
+
+  frontRightCurve.position = new Vector3(5.15, 2, -24.1);
+  frontRightCurve.rotation.y = Math.PI / 3;
+  frontRightCurve.checkCollisions = true;
+
+  const frontFloor = MeshBuilder.CreateBox(
+    'frontFloor',
+    {
+      width: 30,
+      height: 0.2,
+      depth: 10
+    },
+    scene
+  );
+
+  frontFloor.position = new Vector3(0, -0.1, -20);
+  frontFloor.checkCollisions = true;
+
+
+
 
   // =========================================================
   // NUESTRO CUBITO AZUL 💙
@@ -635,5 +728,5 @@ window.onload = function () {
   window.addEventListener('resize', () => {
     engine.resize();
   });
-};
+}
 
