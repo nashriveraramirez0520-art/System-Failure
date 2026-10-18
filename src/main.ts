@@ -1,4 +1,6 @@
 import './style.css';
+import { playerSpawns } from './environment/layout';
+import { createLunarisInterior } from './environment/createLunarisInterior';
 import { io } from 'socket.io-client';
 import {
   Engine,
@@ -6,7 +8,6 @@ import {
   FreeCamera,
   Vector3,
   Ray,
-  HemisphericLight,
   MeshBuilder,
   StandardMaterial,
   Color3
@@ -95,12 +96,12 @@ window.onload = function () {
     console.log(`My player role: ${myPlayerRole}`);
 
     if (myPlayerRole === 'player1') {
-      camera.position.set(-3, 3.8345, 13.5);
+      camera.position.set(playerSpawns.player1.x, playerSpawns.player1.y, playerSpawns.player1.z);
       camera.rotation.set(0, Math.PI + Math.PI / 16, 0);
     }
 
     if (myPlayerRole === 'player2') {
-      camera.position.set(3, 3.8345, 13.5);
+      camera.position.set(playerSpawns.player2.x, playerSpawns.player2.y, playerSpawns.player2.z);
       camera.rotation.set(0, Math.PI + Math.PI / 16, 0);
     }
   });
@@ -220,243 +221,7 @@ window.onload = function () {
     }
   });
 
-  // =========================================================
-  // LIGHT
-  // =========================================================
-
-  new HemisphericLight(
-    'light',
-    new Vector3(0, 1, 0),
-    scene
-  );
-
-  // =========================================================
-  // FLOOR
-  // =========================================================
-
-  const floor = MeshBuilder.CreateGround(
-    'floor',
-    {
-      width: 30,
-      height: 30
-    },
-    scene
-  );
-
-  floor.checkCollisions = true;
-
-  // =========================================================
-  // WALLS - LUNARIS-01 BLOCKOUT
-  // =========================================================
-
-  const backWall = MeshBuilder.CreateBox(
-    'backWall',
-    {
-      width: 30,
-      height: 4,
-      depth: 0.3
-    },
-    scene
-  );
-
-  backWall.position = new Vector3(0, 2, 15);
-  backWall.checkCollisions = true;
-
-  const frontWall = MeshBuilder.CreateBox(
-    'frontWall',
-    {
-      width: 30,
-      height: 4,
-      depth: 0.3
-    },
-    scene
-  );
-
-  frontWall.position = new Vector3(0, 2, -15);
-  frontWall.checkCollisions = true;
-
-  frontWall.setEnabled(false);
-  
-
-  const leftWall = MeshBuilder.CreateBox(
-    'leftWall',
-    {
-      width: 0.3,
-      height: 4,
-      depth: 30
-    },
-    scene
-  );
-
-  leftWall.position = new Vector3(-15, 2, 0);
-  leftWall.checkCollisions = true;
-
-  const rightWall = MeshBuilder.CreateBox(
-    'rightWall',
-    {
-      width: 0.3,
-      height: 4,
-      depth: 30
-    },
-    scene
-  );
-
-  
-  rightWall.position = new Vector3(15, 2, 0);
-  rightWall.checkCollisions = true;
-
-  //==========================================================
-  // PROA LUNARIS-01
-  //==========================================================
-  
-  const frontLeftHull = MeshBuilder.CreateBox('frontLeftHull',
-    {
-      width: 0.3,
-      height: 4,
-      depth: 14.5
-    },
-    scene
-  );
-  
-
-  frontLeftHull.position = new Vector3(-10.2, 2, -20);
-  frontLeftHull.rotation.y = -Math.PI / 4;
-  frontLeftHull.checkCollisions = true;
-
-  const frontRightHull = MeshBuilder.CreateBox(
-    'frontRightHull',
-    {
-      width: 0.3,
-      height: 4,
-      depth: 14.5
-    },
-    scene
-  );
-
-  frontRightHull.position = new Vector3(10.2, 2, -20);
-  frontRightHull.rotation.y = Math.PI / 4;
-  frontRightHull.checkCollisions = true;
-
-  const frontCenterHull = MeshBuilder.CreateBox(
-    'frontCenterHull',
-    {
-      width: 7,
-      height: 4,
-      depth: 0.3
-    },
-    scene
-  );
-
-  frontCenterHull.position = new Vector3(0, 2, -25);
-  frontCenterHull.checkCollisions = true;
-
-  const frontLeftCurve = MeshBuilder.CreateBox(
-    'frontLeftCurve',
-    {
-      width: 0.3,
-      height: 4,
-      depth: 5
-    },
-    scene
-  );
-
-  frontLeftCurve.position = new Vector3(-5.15, 2, -24.1);
-  frontLeftCurve.rotation.y = -Math.PI / 3;
-  frontLeftCurve.checkCollisions = true;
-  
-  const frontRightCurve = MeshBuilder.CreateBox(
-    'frontRightCurve',
-    {
-      width: 0.3,
-      height: 4,
-      depth: 5
-    },
-    scene
-  );
-
-  frontRightCurve.position = new Vector3(5.15, 2, -24.1);
-  frontRightCurve.rotation.y = Math.PI / 3;
-  frontRightCurve.checkCollisions = true;
-
-  const frontFloor = MeshBuilder.CreateBox(
-    'frontFloor',
-    {
-      width: 30,
-      height: 0.2,
-      depth: 10
-    },
-    scene
-  );
-
-  frontFloor.position = new Vector3(0, -0.1, -20);
-  frontFloor.checkCollisions = true;
-
-
-
-
-  // =========================================================
-  // NUESTRO CUBITO AZUL 💙
-  // =========================================================
-
-  const box = MeshBuilder.CreateBox(
-    'box',
-    { size: 2 },
-    scene
-  );
-
-  box.position.y = 0.5;
-
-  const mat = new StandardMaterial('mat', scene);
-
-  mat.diffuseColor = new Color3(
-    0.2,
-    0.6,
-    1
-  );
-
-  box.material = mat;
-
-  // =========================================================
-  // CRYOPODS - PRIMER BLOCKOUT
-  // =========================================================
-
-  const cryopod1 = MeshBuilder.CreateBox(
-    'cryopod1',
-    {
-      width: 2.2,
-      height: 1.2,
-      depth: 4
-    },
-    scene
-  );
-
-  cryopod1.position = new Vector3(
-    -3,
-    1.5,
-    13.5
-  );
-
-  cryopod1.checkCollisions = true;
-  cryopod1.rotation.x = -Math.PI / 6;
-
-  const cryopod2 = MeshBuilder.CreateBox(
-    'cryopod2',
-    {
-      width: 2.2,
-      height: 1.2,
-      depth: 4
-    },
-    scene
-  );
-
-  cryopod2.position = new Vector3(
-    3,
-    1.5,
-    13.5
-  );
-
-  cryopod2.checkCollisions = true;
-  cryopod2.rotation.x = -Math.PI / 6;
+  createLunarisInterior(scene);
 
   // =========================================================
   // REMOTE PLAYER
@@ -623,7 +388,7 @@ window.onload = function () {
       2
     );
 
-    const groundHit = scene.pickWithRay(groundRay);
+    const groundHit = scene.pickWithRay(groundRay, (mesh) => mesh.isPickable && mesh.isEnabled() && mesh.metadata?.groundRayIgnore !== true);
 
     const hasGroundBelow =
       groundHit?.hit === true &&
@@ -635,7 +400,22 @@ window.onload = function () {
     }
 
     if (!isGrounded) {
-      camera.position.y += verticalVelocity;
+      if (verticalVelocity > 0) {
+        const headClearance = 1.8; // Matches ellipsoid + offset above the camera.
+        const ceilingHit = scene.pickWithRay(
+          new Ray(camera.position, Vector3.Up(), headClearance + verticalVelocity),
+          (mesh) => mesh.isEnabled() && mesh.metadata?.blocksHead === true
+        );
+        if (ceilingHit?.hit && ceilingHit.distance < headClearance + verticalVelocity) {
+          verticalVelocity = Math.max(0, ceilingHit.distance - headClearance - 0.01);
+          camera.position.y += verticalVelocity;
+          verticalVelocity = 0;
+        } else {
+          camera.position.y += verticalVelocity;
+        }
+      } else {
+        camera.position.y += verticalVelocity;
+      }
       verticalVelocity -= gravityForce;
 
       if (
@@ -729,4 +509,3 @@ window.onload = function () {
     engine.resize();
   });
 }
-
