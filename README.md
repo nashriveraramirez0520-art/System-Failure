@@ -8,8 +8,6 @@ Two crew members awaken aboard a spacecraft controlled by **AURA**, the ship's a
 
 ## 🚀 Current Development Status
 
-SYSTEM FAILURE is an active prototype being developed for the **Handshake AI Skills Studio x OpenAI Multiplayer Game Challenge**.
-
 ### Implemented
 
 - Babylon.js 3D environment and first-person controller
