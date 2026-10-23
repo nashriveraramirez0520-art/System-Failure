@@ -1,8 +1,10 @@
 # SYSTEM FAILURE
 
-**SYSTEM FAILURE** is a cooperative multiplayer sci-fi game set aboard the **LUNARIS-01**.
+System Failure is a game I'm trying to develop without much experience in coding. It was first a project for an school competition, but I never submitted it because it was still in early develpment. 
 
-Two crew members awaken aboard a spacecraft controlled by **AURA**, the ship's artificial intelligence. When a catastrophic system failure separates the crew, survival depends on communication: each player has access to different spaces, information, and ship systems.
+The game is designed to have similar mechanics as the steam game "BoomBanana" where every player is needed to finish the game.
+
+System Failure would follow this story line: First, the two team members wake up aboard the LUNARIS-01, a spacecraft controlled by an artificial intelligence called *Aura*. She gives kind of a tutorial mission in which the two players would need to go to their respective work station and fix a system error inside the spaceship. The players would be able to select between two roles; Engineer and Operations. Engineer would be in charge of the engine room and systems room, while the operator would be in charge of the bow( controls room). After they complete the tutorial, a catastrophic system failure (hence the name of the game) would separate the crew, their survival depends on how they communicate.
 
 > Easy to understand. Difficult to coordinate. Hilarious to fail.
 
@@ -42,8 +44,6 @@ The next major milestone is the core cooperative gameplay loop:
 
 SYSTEM FAILURE is built around **asymmetric cooperation**.
 
-Both players face the same emergency, but they do not always see the same information or have access to the same controls. Operations may be able to diagnose a failing system while the Engineer must physically locate and repair the corresponding machinery.
-
 The goal is to make communication part of the game itself: knowing the solution is not enough if your crewmate is the one who has to carry it out.
 
 Planned and developing ship systems include power, coolant and machinery, oxygen and ventilation, hull integrity, emergency systems, cameras, and security.
@@ -54,7 +54,7 @@ The current ship layout progresses through interconnected functional spaces:
 
 **Engineering Machinery / Maintenance → Engineering Control → Crew Quarters & Lounge → Emergency Bulkhead → Command / Operations → Observation Window**
 
-The two current players begin in separate cryopod rooms. Each room contains an additional cryopod reserved for possible future expansion beyond the current two-player design.
+As of right now, the two players would spawn in one of the cryopod rooms, but there is another cryopod room reserved for a possible expansion beyond the two player desing. 
 
 Engineering is intentionally split between a control area and a physical machinery bay so future failures can require one player to interpret system information while the other works directly with pipes, pumps, valves, electrical equipment, and other machinery.
 
@@ -62,7 +62,7 @@ Engineering is intentionally split between a control area and a physical machine
 
 **AURA** is the artificial intelligence aboard the LUNARIS-01.
 
-She assists the crew, reports ship conditions, reacts to emergencies, and occasionally comments on the crew's questionable survival decisions.
+Aura is going to be desing to develop a personality through the game, she initially would just assit the crew and comment on the ship conditions, but if the players fail some mission, she would start to comment on the crew's questionable survival decisions. 
 
 `AURA: All systems operational. Probably. ^_^`
 
@@ -73,6 +73,8 @@ Cubito is a small blue cube aboard the LUNARIS-01.
 His operational purpose remains classified.
 
 His survival rate is currently exceptional.
+
+(as context for this information, I added "cubito", a blue square, into the ship by error, I don't know how I was trying to code the floor, but it gave me this blue square, which I decided to keep an later hide or something so it is an easter egg)
 
 ## 🛠️ Technology
 
