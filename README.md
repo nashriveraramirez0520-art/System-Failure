@@ -87,6 +87,14 @@ His survival rate is currently exceptional.
 
 ## ▶️ Local Development
 
+The current online development build can be played here:
+
+https://system-failure-game.onrender.com/
+
+The game is currently in active development, so systems, visuals, performance, and gameplay may change as development continues.
+
+To run the game on your computer via Vs Code:
+
 Install dependencies:
 
 ```bash
